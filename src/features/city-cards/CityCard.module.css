@@ -1,0 +1,48 @@
+.card {
+	position: relative;
+	width: 20em;
+	margin: 0.5em;
+	padding: 1em 2em;
+
+	background-color: hsl(0, 0%, 25%);
+	color: hsl(0, 0%, 90%);
+	border: 1px solid hsl(0, 0%, 60%);
+	border-radius: 0.5em;
+}
+
+.cardHeader {
+	display: flex;
+	align-items: center;
+	height: 2em;
+	margin-bottom: 0.5em;
+}
+
+.cityName {
+	font-size: 1.5em;
+	color: hsl(0, 0%, 90%);
+}
+
+.barOuter {
+	margin: 0.5em 0;
+	width: 100%;
+	border-radius: 0.5em;
+	overflow: hidden;
+	background-color: hsl(0, 0%, 90%);
+}
+
+.barInner {
+	width: 0%;
+	height: 1em;
+	border-radius: 0 0.5em 0.5em 0;
+}
+
+.button {
+	font-size: 0;
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	
+	cursor: pointer;
+	background-color: transparent;
+	border: none;
+}

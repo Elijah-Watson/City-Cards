@@ -1,0 +1,9 @@
+.container {
+	font-size: 1.3em;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, 21em);
+	grid-auto-rows: auto;
+	justify-content: center;
+	justify-items: center;
+	align-items: center;
+}

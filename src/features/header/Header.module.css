@@ -1,0 +1,26 @@
+.headerBar {
+	position: relative;
+	width: 100%;
+	padding: 0.5em;
+	text-align: center;
+	background-color: hsl(0, 0%, 15%);
+	box-shadow: 4px 4px 6px 0px rgba(0,0,0,0.3);
+	z-index: 100;
+}
+
+.siteTitle {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 1.5rem;
+	color: hsl(0, 0%, 90%);
+}
+
+.siteIcon {
+	margin-right: 0.25em;
+}
+
+.siteTitle h1 {
+	font-size: 1em;
+	text-transform: uppercase;
+}

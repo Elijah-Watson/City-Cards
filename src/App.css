@@ -1,0 +1,5 @@
+.App {
+	background-color: hsl(0, 0%, 35%);
+	color: hsl(0, 0%, 90%);
+	min-height: 100vh;
+}

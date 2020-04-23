@@ -1,0 +1,94 @@
+.csParent {
+	font-size: 1em;
+	display: inline-block;
+	position: relative;
+	min-width: 0;
+	width: 100%;
+	margin: 0.75rem 0;
+}
+
+.csButton {
+	font-size: 1.1em;
+	position: relative;
+	width: inherit;
+	padding: 0.4rem 2.4rem 0.4rem 0.6rem;
+	text-align: left;
+	background-color: hsl(0, 0%, 30%);
+	color: hsl(0, 0%, 90%);
+	border: none;
+	box-shadow: 1px 0 hsl(0, 0%, 60%),
+				0 1px hsl(0, 0%, 60%),
+				-1px 0 hsl(0, 0%, 60%),
+				0 -1px hsl(0, 0%, 60%);
+	border-radius: 0.5rem;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.csButton::after {
+	font-size: 0.75em;
+	content: '▼';
+	position: absolute;
+	top: 0;
+	right: 0.75rem;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	/* transition: transform 200ms ease-in; */
+}
+.csButton.open {
+	border-radius: 0.5rem 0.5rem 0 0;
+}
+.csButton.open::after {
+	transform: rotate(180deg);
+}
+
+.csDropdown {
+	position: absolute;
+	width: inherit;
+	box-shadow: 1px 0 hsl(0, 0%, 60%),
+				0 1px hsl(0, 0%, 60%),
+				-1px 0 hsl(0, 0%, 60%);
+	border-top: none;
+	border-radius: 0 0 0.5rem 0.5rem;
+	overflow: hidden;
+
+	z-index: 200;
+}
+
+.csSearch {
+	font-size: 1em;
+	width: 100%;
+	padding: 0.3rem 0.6rem;
+	background-color: hsl(0, 0%, 25%);
+	color: hsl(0, 0%, 90%);
+	border: none;
+}
+
+.csOptions {
+	max-height: 7.5em;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+.csOption {
+	font-size: 1em;
+	padding: 0.2rem 0.6rem;
+	cursor: default;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	background-color: hsl(0, 0%, 30%);
+	color: hsl(0, 0%, 90%);
+}
+.csOption:hover {
+	background-color: hsl(0, 0%, 20%);
+	color: hsl(0, 0%, 90%);
+}
+.csOption.disabled {
+	color: hsl(0, 0%, 70%);
+}
+.csOption.disabled:hover {
+	background-color: hsl(0, 0%, 30%);
+	color: hsl(0, 0%, 70%);
+}
