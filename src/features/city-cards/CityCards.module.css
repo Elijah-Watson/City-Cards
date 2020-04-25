@@ -1,9 +1,15 @@
 .container {
-	font-size: 1.3em;
+	font-size: 1.3rem;
 	display: grid;
 	grid-template-columns: repeat(auto-fill, 21em);
 	grid-auto-rows: auto;
 	justify-content: center;
 	justify-items: center;
 	align-items: center;
+}
+
+@media (max-width: 450px) { 
+	.container {
+		font-size: 4.5vw;
+	}
 }

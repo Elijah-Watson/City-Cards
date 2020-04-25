@@ -18,9 +18,22 @@
 
 .siteIcon {
 	margin-right: 0.25em;
+	width: 1em;
+	height: 1em;
 }
 
 .siteTitle h1 {
 	font-size: 1em;
 	text-transform: uppercase;
+}
+
+@media (max-width: 450px) { 
+	.siteIcon {
+		margin-right: 1.25vw;
+		width: 5.25vw;
+		height: 5.25vw;
+	}
+	.siteTitle h1 {
+		font-size: 5.25vw;
+	}
 }

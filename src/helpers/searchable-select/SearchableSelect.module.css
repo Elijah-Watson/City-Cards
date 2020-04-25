@@ -4,14 +4,14 @@
 	position: relative;
 	min-width: 0;
 	width: 100%;
-	margin: 0.75rem 0;
+	margin: 0.75em 0;
 }
 
 .csButton {
 	font-size: 1.1em;
 	position: relative;
 	width: inherit;
-	padding: 0.4rem 2.4rem 0.4rem 0.6rem;
+	padding: 0.4em 2.4em 0.4em 0.6em;
 	text-align: left;
 	background-color: hsl(0, 0%, 30%);
 	color: hsl(0, 0%, 90%);
@@ -20,7 +20,7 @@
 				0 1px hsl(0, 0%, 60%),
 				-1px 0 hsl(0, 0%, 60%),
 				0 -1px hsl(0, 0%, 60%);
-	border-radius: 0.5rem;
+	border-radius: 0.5em;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -30,14 +30,14 @@
 	content: '▼';
 	position: absolute;
 	top: 0;
-	right: 0.75rem;
+	right: 1em;
 	height: 100%;
 	display: flex;
 	align-items: center;
 	/* transition: transform 200ms ease-in; */
 }
 .csButton.open {
-	border-radius: 0.5rem 0.5rem 0 0;
+	border-radius: 0.5em 0.5em 0 0;
 }
 .csButton.open::after {
 	transform: rotate(180deg);
@@ -50,7 +50,7 @@
 				0 1px hsl(0, 0%, 60%),
 				-1px 0 hsl(0, 0%, 60%);
 	border-top: none;
-	border-radius: 0 0 0.5rem 0.5rem;
+	border-radius: 0 0 0.5em 0.5em;
 	overflow: hidden;
 
 	z-index: 200;
@@ -59,7 +59,7 @@
 .csSearch {
 	font-size: 1em;
 	width: 100%;
-	padding: 0.3rem 0.6rem;
+	padding: 0.3em 0.6em;
 	background-color: hsl(0, 0%, 25%);
 	color: hsl(0, 0%, 90%);
 	border: none;
@@ -73,7 +73,7 @@
 
 .csOption {
 	font-size: 1em;
-	padding: 0.2rem 0.6rem;
+	padding: 0.2em 0.6em;
 	cursor: default;
 	white-space: nowrap;
 	overflow: hidden;

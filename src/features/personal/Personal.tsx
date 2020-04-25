@@ -11,7 +11,7 @@ export function Personal() {
 	const personalForm = personalFormStatus ? <PersonalFormContainer hideForm={hideForm} /> : null;
 	return (
 		<div>
-			<button className={styles.button} onClick={toggleFormStatus} ><User color='hsl(0, 0%, 90%)' size='35' /></button>
+			<button className={styles.button} onClick={toggleFormStatus} ><User color='hsl(0, 0%, 90%)' className={styles.buttonIcon} /></button>
 			{personalForm}
 		</div>
 	);

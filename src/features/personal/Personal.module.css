@@ -5,7 +5,6 @@
 	right: 1rem;
 	width: auto;
 	height: auto;
-	padding: 1%;
 	
 	background-color: #404040;
 	box-shadow: 3px 3px 5px 0px rgba(0,0,0,0.3);
@@ -13,4 +12,17 @@
 	border-radius: 50%;
 
 	cursor: pointer;
+}
+
+.buttonIcon {
+	font-size: 1rem;
+	width: 2.5em;
+	height: 2.5em;
+	margin: 0.75em;
+}
+
+@media (max-width: 450px) { 
+	.buttonIcon {
+		font-size: 3.55vw;
+	}
 }

@@ -39,7 +39,7 @@ export function PersonalFormContainer({ hideForm }: PersonalFormContainerProps) 
 		<div className={styles.formContainer}>
 			<div className={styles.form}>
 				{content}
-				<button onClick={() => hideForm()} className={styles.button} ><XCircle color='hsl(0, 0%, 90%)' /></button>
+				<button onClick={() => hideForm()} className={styles.button} ><XCircle color='hsl(0, 0%, 90%)' className={styles.buttonIcon} /></button>
 			</div>
 		</div>
 	);
