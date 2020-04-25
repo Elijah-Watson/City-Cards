@@ -120,7 +120,7 @@ function StatBar({ value, min, max, innerColor, outerColor }: CityDataValue) {
 	}
 	const innerColorScheme = {
 		backgroundColor: innerColor,
-		width: (value-min)/(max-min)*100 + '%'
+		width: Math.max((value-min)/(max-min)*100,0) + '%'
 	}
 	return (
 		<div className={styles.barOuter} style={outerColorScheme}>
