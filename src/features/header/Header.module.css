@@ -16,10 +16,9 @@
 	color: hsl(0, 0%, 90%);
 }
 
-.siteIcon {
+.siteLogo {
 	margin-right: 0.25em;
-	width: 1em;
-	height: 1em;
+	width: 1.5em;
 }
 
 .siteTitle h1 {
@@ -28,10 +27,9 @@
 }
 
 @media (max-width: 450px) { 
-	.siteIcon {
+	.siteLogo {
 		margin-right: 1.25vw;
-		width: 5.25vw;
-		height: 5.25vw;
+		width: 8vw;
 	}
 	.siteTitle h1 {
 		font-size: 5.25vw;
