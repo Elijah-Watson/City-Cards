@@ -13,9 +13,10 @@ interface SearchableSelectProps {
 	initialOption?: Option;
 	buttonText?: string;
 	buttonValue?: string;
+	id?: string;
 }
 
-export function SearchableSelect({ options, handleChange, initialOption, buttonText, buttonValue }: SearchableSelectProps) {
+export function SearchableSelect({ options, handleChange, initialOption, buttonText, buttonValue, id }: SearchableSelectProps) {
 	const csParent = useRef<HTMLDivElement>(null);
 	const [status, setStatus] = useState(false);
 	const [current, setCurrent] = useState(initialOption || { text: 'Select an option...', value: '' });
@@ -58,8 +59,8 @@ export function SearchableSelect({ options, handleChange, initialOption, buttonT
 		};
 	}, [csParent]);
 	return (
-		<div className={styles.csParent} ref={csParent}>
-			<button className={classNames(styles.csButton, { [styles.open]: status })} onClick={() => onButtonClick()}>{buttonTextFinal}</button>
+		<div className={styles.csParent} ref={csParent} id={id+'-parent'} >
+			<button className={classNames(styles.csButton, { [styles.open]: status })} onClick={() => onButtonClick()} id={id} >{buttonTextFinal}</button>
 			{csDropdown}
 		</div>
 	);

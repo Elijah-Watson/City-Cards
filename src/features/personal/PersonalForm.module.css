@@ -34,15 +34,15 @@
 	margin: 1em;
 }
 
-.formItem label {
-	display: flex;
-	align-items: center;
-	width: 100%;
-}
-
-.formItem label span {
+.formItemText {
 	white-space: nowrap;
 	margin-right: 0.75em;
+}
+
+.formItemIndicator {
+	margin-left: 0.75em;
+	width: 2em;
+	height: 2em;
 }
 
 .input {

@@ -21,3 +21,5 @@ export interface CityWithDetails extends City {
 export interface Job {
 	title: string;
 }
+
+export type Status = 'loading' | 'complete' | 'error';

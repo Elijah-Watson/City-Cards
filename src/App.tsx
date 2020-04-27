@@ -5,13 +5,13 @@ import { Personal } from './features/personal/Personal';
 import './App.css';
 
 function App() {
-  return (
-    <div className="App">
-    	<Header />
-		<CityCards />
-		<Personal />
-    </div>
-  );
+	return (
+		<div className="App">
+			<Header />
+			<CityCards />
+			<Personal />
+		</div>
+	);
 }
 
 export default App;
