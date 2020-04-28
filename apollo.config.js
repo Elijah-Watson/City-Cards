@@ -1,6 +1,5 @@
-export default {
+module.exports = {
 	client: {
-		name: 'City Cards',
-		service: 'city-cards',
-	},
+		service: 'City-Data'
+	}
 };

@@ -1,25 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { selectJob, selectAdjustedMonthlyCOL } from '../personal/personalSlice';
+import React, { useState, useCallback } from 'react';
 import styles from './CityCards.module.css';
 import { CityCard } from './CityCard';
-import { NewCityCard } from './NewCityCard';
-import { useQuery } from '@apollo/react-hooks';
-import { CITY_DATA } from '../../queries';
-import { CityWithDetails } from '../../types';
-
-export function CityCards() {
-	const [cityIds, setCityIds] = useState<string[]>([]);
-	const addCity = (cityId: string) => setCityIds(cityIds => [...cityIds, cityId]);
-	const removeCity = (cityId: string) => setCityIds(cityIds => cityIds.filter(city => city !== cityId));
-	const cardsContainer = cityIds.length > 0 ? <CardsContainer cityIds={cityIds} removeCity={removeCity} /> : null;
-	return (
-		<div className={styles.container}>
-			{cardsContainer}
-			<NewCityCard existingCityIds={cityIds} handleChange={addCity} />
-		</div>
-	);
-}
+import { CityWithDetails, Ranges } from '../../types';
 
 function getAdjustedMinMax(values: number[], scale?: number): [number, number] {
 	values = values.filter(values => !!values);
@@ -48,84 +30,81 @@ function getAdjustedMinMax(values: number[], scale?: number): [number, number] {
 	return [adjustedMin, adjustedMax];
 }
 
-interface CardsContainerProps {
-	cityIds: string[];
-	removeCity: Function;
-}
-
-function CardsContainer({ cityIds, removeCity }: CardsContainerProps) {
-	const jobTitle = useSelector(selectJob);
-	const adjustedMonthlyCOL = useSelector(selectAdjustedMonthlyCOL);
-	const [citiesData, setCitiesData] = useState<CityWithDetails[]>([]);
-	const { error, data } = useQuery(CITY_DATA, { variables: { ids: cityIds, title: jobTitle } });
-	useEffect(() => {
-		if (error) console.error(error);
-		if (data && data.cities) setCitiesData(data.cities);
-	}, [error, data]);
-	const cities = citiesData
-					.filter(city => cityIds.includes(city.id))
-					.sort((a, b) => cityIds.indexOf(a.id) - cityIds.indexOf(b.id));
+function calculateRanges(cities: CityWithDetails[]): Ranges {
 	const [populationMin, populationMax] = getAdjustedMinMax(cities.map(city => city.population));
-	const [costOfLivingsMin, costOfLivingsMax] = getAdjustedMinMax(cities.map(city => city.costOfLiving * adjustedMonthlyCOL));
+	const [costOfLivingsMin, costOfLivingsMax] = getAdjustedMinMax(cities.map(city => city.costOfLiving));
 	const [crimeMin, crimeMax] = getAdjustedMinMax([...cities.map(city => city.violentCrime), ...cities.map(city => city.propertyCrime)]);
 	const [happinessMin, happinessMax] = getAdjustedMinMax(cities.map(city => city.happiness));
 	const [averageAnnualSalaryMin, averageAnnualSalaryMax] = getAdjustedMinMax(cities.map(city => city.job.averageAnnualSalary));
 	const [totalJobsMin, totalJobsMax] = getAdjustedMinMax(cities.map(city => city.job.totalJobs));
+	return {
+		population: {
+			min: populationMin,
+			max: populationMax
+		},
+		costOfLiving: {
+			min: costOfLivingsMin,
+			max: costOfLivingsMax
+		},
+		violentCrime: {
+			min: crimeMin,
+			max: crimeMax
+		},
+		propertyCrime: {
+			min: crimeMin,
+			max: crimeMax
+		},
+		happiness: {
+			min: happinessMin,
+			max: happinessMax
+		},
+		job: {
+			averageAnnualSalary: {
+				min: averageAnnualSalaryMin,
+				max: averageAnnualSalaryMax
+			},
+			totalJobs: {
+				min: totalJobsMin,
+				max: totalJobsMax
+			},
+		}
+	}
+
+}
+
+export function CityCards() {
+	const [cityIds, setCityIds] = useState<string[]>([]);
+	const [cities, setCities] = useState<CityWithDetails[]>([]);
+	const [cards, setCards] = useState<number[]>([]);
+	const [cardCount, setCardCount] = useState<number>(0);
+	const addCityId = (nCityId: string) => setCityIds(cityIds => [...cityIds, nCityId]);
+	const addCity = useCallback((nCity: CityWithDetails) => setCities(cities => cities.filter(city => city.id !== nCity.id).concat(nCity)), []);
+	const removeCity = useCallback((xCityId: string) => {
+		setCityIds(cityIds => cityIds.filter(cityId => cityId !== xCityId));
+		setCities(cities => cities.filter(city => city.id !== xCityId));
+	}, []);
+	const incrementCardCount = () => setCardCount(cardCount => cardCount + 1);
+	const addCard = () => {
+		setCards(cards => [...cards, cardCount]);
+		incrementCardCount();
+	}
+	const removeCard = (id: number) => setCards(cards => cards.filter(card => card !== id));
 	return (
-		<>
+		<div className={styles.container} >
 			{
-				cities.map(city => (
+				cards.map(card => (
 					<CityCard
-						key={city.id}
-						cityFullName={city.name + ', ' + city.state.code}
-						removeSelf={() => () => removeCity(city.id)}
-						cityData={{
-							population: {
-								min: populationMin,
-								max: populationMax,
-								value: city.population,
-								innerColor: '#0067a7'
-							},
-							costOfLiving: {
-								min: costOfLivingsMin,
-								max: costOfLivingsMax,
-								value: Math.round(city.costOfLiving * adjustedMonthlyCOL),
-								innerColor: '#e97600'
-							},
-							violentCrime: {
-								min: crimeMin,
-								max: crimeMax,
-								value: city.violentCrime,
-								innerColor: '#bd1e24'
-							},
-							propertyCrime: {
-								min: crimeMin,
-								max: crimeMax,
-								value: city.propertyCrime,
-								innerColor: '#bd1e24'
-							},
-							happiness: {
-								min: happinessMin,
-								max: happinessMax,
-								value: city.happiness,
-								innerColor: '#007256'
-							},
-							annualSalary: {
-								min: averageAnnualSalaryMin,
-								max: averageAnnualSalaryMax,
-								value: city.job.averageAnnualSalary,
-								innerColor: '#964f8e'
-							},
-							availableJobs: {
-								min: totalJobsMin,
-								max: totalJobsMax,
-								value: city.job.totalJobs,
-								innerColor: '#964f8e'
-							}
-						}}
+						key={card}
+						addCityId={addCityId}
+						addCity={addCity}
+						removeCity={removeCity}
+						cityIds={cityIds}
+						ranges={calculateRanges(cities)}
+						removeSelf={() => () => removeCard(card)}
 					/>
 				))
 			}
-		</>
-	)
+			<button onClick={() => addCard()} >Click Me</button>
+		</div>
+	);
 }
