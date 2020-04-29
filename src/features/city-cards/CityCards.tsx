@@ -62,9 +62,7 @@ function CardsContainer({ cityIds, removeCity }: CardsContainerProps) {
 		if (error) console.error(error);
 		if (data && data.cities) setCitiesData(data.cities);
 	}, [error, data]);
-	const cities = citiesData
-					.filter(city => cityIds.includes(city.id))
-					.sort((a, b) => cityIds.indexOf(a.id) - cityIds.indexOf(b.id));
+	const cities = citiesData.filter(city => cityIds.includes(city.id));
 	const [populationMin, populationMax] = getAdjustedMinMax(cities.map(city => city.population));
 	const [costOfLivingsMin, costOfLivingsMax] = getAdjustedMinMax(cities.map(city => city.costOfLiving * adjustedMonthlyCOL));
 	const [crimeMin, crimeMax] = getAdjustedMinMax([...cities.map(city => city.violentCrime), ...cities.map(city => city.propertyCrime)]);
