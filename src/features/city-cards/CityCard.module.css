@@ -15,7 +15,13 @@
 	width: 100%;
 }
 
-.indicatorWrapper {
+.smallIndicatorParent {
+	position: absolute;
+	top: 5px;
+	left: 5px;
+}
+
+.largeIndicatorWrapper {
 	visibility: visible;
 	position: absolute;
 	top: 0;
@@ -27,7 +33,7 @@
 	justify-content: center;
 }
 
-.indicatorParent {
+.largeIndicatorParent {
 	width: 5em;
 }
 

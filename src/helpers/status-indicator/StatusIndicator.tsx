@@ -12,8 +12,8 @@ interface StatusIndicatorProps {
 }
 
 export function StatusIndicator({ status, showComplete, color }: StatusIndicatorProps) {
-	return status === 'loading' ? <LoadingIndicator color={color} /> :
-			status === 'error' ? <ErrorIndicator color={color} /> : 
+	return status === Status.Loading ? <LoadingIndicator color={color} /> :
+		status === Status.Error ? <ErrorIndicator color={color} /> : 
 			showComplete ? <CompleteIndicator color={color} />:
 			null;
 }

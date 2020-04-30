@@ -6,23 +6,21 @@ import { SearchableSelect } from '../../helpers/searchable-select/SearchableSele
 import { Blanker } from '../../helpers/blanker/Blanker';
 import { StatusIndicator } from '../../helpers/status-indicator/StatusIndicator';
 import { useQuery } from '@apollo/react-hooks';
-import { CITIES, CITY_DATA_BY_ID } from '../../queries';
-import { City, CityWithDetails, Status, Ranges, FormattedCity } from '../../types';
+import { queryResponsetoStatus } from '../../helpers/status-indicator/queryResponseToStatus';
+import { CITIES, CITY_WITH_DETAILS_AND_RANGES, 
+	CitiesData, CityWithDetailsAndRangesQueryData, CityWithDetailsAndRangesQueryVars } from '../../queries';
+import { City, Status, FormattedCity, CityWithDetailsandRanges } from '../../types';
 
 import { XCircle } from 'react-feather';
 
-type CityList = { text: string; value: string }[];
-
 interface CityCardProps {
 	addCityId: Function;
-	addCity: Function;
-	removeCity: Function;
+	removeCityId: Function;
 	cityIds: string[];
-	ranges: Ranges;
 	removeSelf: Function;
 }
 
-export function CityCard({ addCityId, addCity, removeCity, cityIds, ranges, removeSelf }: CityCardProps) {
+export function CityCard({ addCityId, removeCityId, cityIds, removeSelf }: CityCardProps) {
 	const [newCard, setNewCard] = useState<boolean>(true);
 	const [currentCityId, setCurrentCityId] = useState<string>('');
 	const handleChange = (cityId: string) => {
@@ -30,53 +28,28 @@ export function CityCard({ addCityId, addCity, removeCity, cityIds, ranges, remo
 		setCurrentCityId(cityId);
 		addCityId(cityId);
 	}
-	useEffect(() => () => removeCity(currentCityId), [currentCityId, removeCity]);
-	return (
-		<div className={styles.card} >
-			{newCard ? <NewCityCard cityIds={cityIds} handleChange={handleChange} /> : <LoadedCityCard cityId={currentCityId} addCity={addCity} ranges={ranges} />}
-			<button onClick={removeSelf()} className={styles.button}><XCircle color='hsl(0, 0%, 90%)' /></button>
-		</div>
-	);
+	useEffect(() => () => removeCityId(currentCityId), [currentCityId, removeCityId]);
+	return newCard ? <NewCityCard cityIds={cityIds} handleChange={handleChange} removeSelf={removeSelf} /> : <LoadedCityCard cityId={currentCityId} removeSelf={removeSelf} />;
 }
 
 interface NewCityCardProps {
 	cityIds: string[];
 	handleChange: Function;
+	removeSelf: Function;
 }
 
-function NewCityCard({ cityIds, handleChange }: NewCityCardProps) {
-	const { loading, error, data } = useQuery(CITIES);
-	const [status, setStatus] = useState<Status>('loading');
-	const [cityList, setCityList] = useState<CityList>([]);
+function NewCityCard({ cityIds, handleChange, removeSelf }: NewCityCardProps) {
+	const { loading, error, data } = useQuery<CitiesData>(CITIES);
+	const status = queryResponsetoStatus(loading, error);
+	const cityList = data?.cities ? data.cities
+						.filter((city: City) => !cityIds.includes(city.id))
+						.map((city: City) => ({ value: city.id, text: city.name + ', ' + city.state.code })) : [];
 
-	useEffect(
-		() => {
-			if (loading) setStatus('loading');
-			if (error) {
-				console.error(error);
-				setStatus('error');
-			}
-			if (data && data.cities) {
-				setStatus('complete');
-				const newCityList = data.cities
-					.filter((city: City) => !cityIds.includes(city.id))
-					.map((city: City) => ({ value: city.id, text: city.name + ', ' + city.state.code }));
-				setCityList(newCityList);
-			}
-		},
-		[loading, error, data, cityIds]
-	);
-	const indicator = (
-		<div className={styles.indicatorWrapper} >
-			<div className={styles.indicatorParent} >
-				<StatusIndicator status={status} showComplete={false} />
-			</div>
-		</div>
-	);
 	return (
-		<>
-			{!cityList.length && indicator}
+		<div className={styles.card} >
+			{!cityList.length && <LargeIndicator status={status} />}
 			<Blanker blank={!cityList.length} >
+				<button onClick={removeSelf()} className={styles.button}><XCircle color='hsl(0, 0%, 90%)' /></button>
 				<div className={styles.cardHeader}>
 					<div className={styles.formItem}>
 						<SearchableSelect options={cityList} handleChange={handleChange} buttonText="Choose a city..." />
@@ -84,47 +57,47 @@ function NewCityCard({ cityIds, handleChange }: NewCityCardProps) {
 				</div>
 				<CityCardData empty={true} />
 			</Blanker>
-		</>
+		</div>
 	)
 }
 
-function formatCity(city: CityWithDetails, ranges: Ranges): FormattedCity {
+function formatCity(city: CityWithDetailsandRanges): FormattedCity {
 	return {
 		fullName: city.name + ', ' + city.state.code,
 		population: {
-			min: ranges.population.min,
-			max: ranges.population.max,
+			min: 0,
+			max: city.populationRange.max,
 			value: city.population
 		},
 		costOfLiving: {
-			min: ranges.costOfLiving.min,
-			max: ranges.costOfLiving.max,
+			min: city.costOfLivingRange.min,
+			max: city.costOfLivingRange.max,
 			value: city.costOfLiving
 		},
 		violentCrime: {
-			min: ranges.violentCrime.min,
-			max: ranges.violentCrime.max,
+			min: 0,
+			max: Math.max(city.violentCrimeRange.max, city.propertyCrimeRange.max),
 			value: city.violentCrime
 		},
 		propertyCrime: {
-			min: ranges.propertyCrime.min,
-			max: ranges.propertyCrime.max,
+			min: 0,
+			max: Math.max(city.violentCrimeRange.max, city.propertyCrimeRange.max),
 			value: city.propertyCrime
 		},
 		happiness: {
-			min: ranges.happiness.min,
-			max: ranges.happiness.max,
+			min: city.happinessRange.min,
+			max: city.happinessRange.max,
 			value: city.happiness
 		},
 		job: {
 			averageAnnualSalary: {
-				min: ranges.job.averageAnnualSalary.min,
-				max: ranges.job.averageAnnualSalary.max,
+				min: city.job.averageAnnualSalaryRange.min,
+				max: city.job.averageAnnualSalaryRange.max,
 				value: city.job.averageAnnualSalary
 			},
 			totalJobs: {
-				min: ranges.job.totalJobs.min,
-				max: ranges.job.totalJobs.max,
+				min: 0,
+				max: city.job.totalJobsRange.max,
 				value: city.job.totalJobs
 			},
 		}
@@ -133,52 +106,58 @@ function formatCity(city: CityWithDetails, ranges: Ranges): FormattedCity {
 
 interface LoadedCityCardProps {
 	cityId: string;
-	addCity: Function;
-	ranges: Ranges;
+	removeSelf: Function;
 }
 
-function LoadedCityCard({ cityId, addCity, ranges }: LoadedCityCardProps) {
-	const [status, setStatus] = useState<Status>('loading');
-	const [city, setCity] = useState<CityWithDetails>();
+function LoadedCityCard({ cityId, removeSelf }: LoadedCityCardProps) {
 	const jobTitle = useSelector(selectJob);
-	const { loading, error, data } = useQuery(CITY_DATA_BY_ID, { variables: { id: cityId, title: jobTitle } });
-	useEffect(() => {
-		if (loading) setStatus('loading');
-		if (error) {
-			console.error(error);
-			setStatus('error');
-		}
-		if (data && data.city) {
-			addCity(data.city);
-			setCity(data.city);
-			setStatus('complete');
-		}
-	}, [loading, error, data, addCity]);
-	const formattedCity = city ? formatCity(city, ranges) : undefined;
+	const { loading, error, data } = useQuery<CityWithDetailsAndRangesQueryData, CityWithDetailsAndRangesQueryVars>(CITY_WITH_DETAILS_AND_RANGES, { variables: { id: cityId, title: jobTitle } });
+	const status = queryResponsetoStatus(loading, error);
+	const formattedCity = data?.city ? formatCity(data.city) : undefined;
 	const cityFullName = formattedCity ? formattedCity.fullName : 'Loading...';
-	const indicator = (
-		<div className={styles.indicatorWrapper} >
-			<div className={styles.indicatorParent} >
-				<StatusIndicator status={status} showComplete={false} />
-			</div>
-		</div>
-	);
 	return (
-		<>
-			{!formattedCity && indicator}
+		<div className={styles.card} >
+			{!formattedCity && <LargeIndicator status={status} />}
 			<Blanker blank={!formattedCity}>
-				<div className={styles.cardHeader}>
+				<SmallIndicator status={status} />
+				<button onClick={removeSelf()} className={styles.button}><XCircle color='hsl(0, 0%, 90%)' /></button>
+				<div className={styles.cardHeader} >
 					<h2 className={styles.cityName} >{cityFullName}</h2>
 				</div>
 				<CityCardData city={formattedCity} />
 			</Blanker>
-		</>
+		</div>
 	);
+}
+
+interface LargeIndicatorPropTypes {
+	status: Status;
+}
+
+function LargeIndicator({ status }: LargeIndicatorPropTypes) {
+	return (
+		<div className={styles.largeIndicatorWrapper} >
+			<div className={styles.largeIndicatorParent} >
+				<StatusIndicator status={status} showComplete={false} />
+			</div>
+		</div>
+	)
+}
+
+interface SmallIndicatorPropTypes {
+	status: Status;
+}
+
+function SmallIndicator({ status }: SmallIndicatorPropTypes) {
+	return (
+		<div className={styles.smallIndicatorParent} >
+			<StatusIndicator status={status} showComplete={false} />
+		</div>
+	)
 }
 
 interface CityCardDataProps {
 	city?: FormattedCity;
-	ranges?: Ranges;
 	empty?: boolean;
 }
 
@@ -280,7 +259,7 @@ function StatBar({ value, min, max, innerColor, outerColor }: CityDataValue) {
 	}
 	const innerColorScheme = {
 		backgroundColor: innerColor,
-		width: Math.max((value - min) / (max - min) * 100, 0) + '%'
+		width: max - min > 0 ? Math.max((value - min) / (max - min) * 100, 0) + '%' : '0%'
 	}
 	return (
 		<div className={styles.barOuter} style={outerColorScheme}>

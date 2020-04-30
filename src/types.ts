@@ -1,3 +1,12 @@
+interface MinMax {
+	min: number;
+	max: number;
+}
+
+interface MinMaxValue extends MinMax {
+	value: number;
+}
+
 export interface City {
 	id: string;
 	name: string;
@@ -8,22 +17,36 @@ export interface CityWithCOL extends City {
 	costOfLiving: number;
 }
 
-export interface CityWithDetails extends City {
+export interface Job {
+	title: string;
+}
+
+interface JobWithDetails extends Job {
+	averageAnnualSalary: number;
+	totalJobs: number;
+}
+
+interface JobWithDetailsandRanges extends JobWithDetails {
+	averageAnnualSalaryRange: MinMax;
+	totalJobsRange: MinMax;
+}
+
+interface CityWithDetails extends City {
 	population: number;
 	costOfLiving: number;
 	violentCrime: number;
 	propertyCrime: number;
 	happiness: number;
-	job: {
-		averageAnnualSalary: number;
-		totalJobs: number;
-	};
+	job: JobWithDetails;
 }
 
-export interface MinMaxValue {
-	min: number;
-	max: number;
-	value: number;
+export interface CityWithDetailsandRanges extends CityWithDetails {
+	populationRange: MinMax;
+	costOfLivingRange: MinMax;
+	violentCrimeRange: MinMax;
+	propertyCrimeRange: MinMax;
+	happinessRange: MinMax;
+	job: JobWithDetailsandRanges;
 }
 
 export interface FormattedCity {
@@ -39,25 +62,8 @@ export interface FormattedCity {
 	};
 }
 
-export interface Job {
-	title: string;
+export enum Status {
+	Loading,
+	Complete,
+	Error
 }
-
-export interface MinMax {
-	min: number;
-	max: number;
-}
-
-export interface Ranges {
-	population: MinMax;
-	costOfLiving: MinMax;
-	violentCrime: MinMax;
-	propertyCrime: MinMax;
-	happiness: MinMax;
-	job: {
-		averageAnnualSalary: MinMax;
-		totalJobs: MinMax;
-	};
-}
-
-export type Status = 'loading' | 'complete' | 'error';
