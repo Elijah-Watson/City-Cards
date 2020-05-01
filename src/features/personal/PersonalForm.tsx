@@ -1,47 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { SearchableSelect } from '../../helpers/searchable-select/SearchableSelect';
 import { StatusIndicator } from '../../helpers/status-indicator/StatusIndicator';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateJob, updateMonthlyCOL, updateCurrentCityId, updateAdjustedMonthlyCOL,
 	selectJob, selectMonthlyCOL, selectCurrentCityId } from './personalSlice';
+import { hideForm } from './formVisibilitySlice';
 import { useQuery } from '@apollo/react-hooks';
-import { JOB_TITLES_AND_CITIES } from '../../queries';
+import { queryResponsetoStatus } from '../../helpers/status-indicator/queryResponseToStatus';
+import { JOB_TITLES_AND_CITIES, JobTitlesAndCitiesData } from '../../queries';
 import styles from './PersonalForm.module.css';
 import { Job, CityWithCOL, Status } from '../../types';
 
 import { XCircle } from 'react-feather';
 
-interface PersonalFormContainerProps {
-	hideForm: Function;
-}
-
-export function PersonalFormContainer({ hideForm }: PersonalFormContainerProps) {
-	const { loading, error, data } = useQuery(JOB_TITLES_AND_CITIES);
-	const [ status, setStatus ] = useState<Status>('loading');
-	const [ cities, setCities ] = useState([]);
-	const [ jobs, setJobs ] = useState([]);
-
-	useEffect(
-		() => {
-			if (loading) setStatus('loading');
-			if (error) {
-				console.error(error);
-				setStatus('error');
-			}
-			if (data && data.cities) {
-				setStatus('complete');
-				setCities(data.cities);
-				setJobs(data.jobs);
-			}
-		},
-		[ loading, error, data ]
-	);
-
+export function PersonalFormContainer() {
+	const dispatch = useDispatch();
+	const { loading, error, data } = useQuery<JobTitlesAndCitiesData>(JOB_TITLES_AND_CITIES);
+	const status = queryResponsetoStatus(loading, error);
+	const cities = data?.cities ? data.cities: [];
+	const jobs = data?.jobs ? data.jobs : [];
+	const clickHandler = () => dispatch(hideForm());
 	return (
 		<div className={styles.formContainer}>
 			<div className={styles.form}>
 				<PersonalForm cities={cities} jobs={jobs} status={status} />
-				<button onClick={() => hideForm()} className={styles.button} ><XCircle color='hsl(0, 0%, 90%)' className={styles.buttonIcon} /></button>
+				<button onClick={clickHandler} className={styles.button} ><XCircle color='hsl(0, 0%, 90%)' className={styles.buttonIcon} /></button>
 			</div>
 		</div>
 	);
@@ -87,7 +70,7 @@ function PersonalForm({ jobs, cities, status }: PersonalFormProps) {
 			<div className={styles.formItem} >
 				<label className={styles.formItemText} htmlFor='job-select' >Occupation:</label>
 				<SearchableSelect options={jobTitleOptions} handleChange={jobHandler} buttonText={job} id='job-select' />
-				{status !== 'complete' && <span className={styles.formItemIndicator}><StatusIndicator status={status} /></span>}
+				{status !== Status.Complete && <span className={styles.formItemIndicator}><StatusIndicator status={status} /></span>}
 			</div>
 			<div className={styles.formItem} >
 				<label className={styles.formItemText} htmlFor='col-input' >Current Monthly Budget:</label>
@@ -96,7 +79,7 @@ function PersonalForm({ jobs, cities, status }: PersonalFormProps) {
 			<div className={styles.formItem} >
 				<label className={styles.formItemText} htmlFor='city-select' >Current City:</label>
 				<SearchableSelect options={cityOptions} handleChange={currentCityHandler} buttonValue={currentCityId} id='city-select' />
-				{status !== 'complete' && <span className={styles.formItemIndicator}><StatusIndicator status={status} /></span>}
+				{status !== Status.Complete && <span className={styles.formItemIndicator}><StatusIndicator status={status} /></span>}
 			</div>
 		</div>
 	)

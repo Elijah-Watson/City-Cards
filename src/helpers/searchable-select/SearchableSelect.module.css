@@ -81,14 +81,16 @@
 	background-color: hsl(0, 0%, 30%);
 	color: hsl(0, 0%, 90%);
 }
-.csOption:hover {
+.csOption:hover,
+.csOption:focus {
 	background-color: hsl(0, 0%, 20%);
 	color: hsl(0, 0%, 90%);
 }
 .csOption.disabled {
 	color: hsl(0, 0%, 70%);
 }
-.csOption.disabled:hover {
+.csOption.disabled:hover,
+.csOption.disabled:focus {
 	background-color: hsl(0, 0%, 30%);
 	color: hsl(0, 0%, 70%);
 }

@@ -28,18 +28,24 @@ export function SearchableSelect({ options, handleChange, initialOption, buttonT
 	const openDropdown = () => setStatus(true);
 	const onButtonClick = () => status ? closeDropdown() : openDropdown();
 	const searchChange = (e: React.ChangeEvent<HTMLInputElement>) => setCurrentSearch(e.target.value);
-	const optionClick = (e: React.MouseEvent<HTMLLIElement, MouseEvent>, option: Option) => {
-		e.preventDefault();
+	const selectOption = (option: Option) => {
 		setCurrent(option);
 		handleChange(option.value);
 		closeDropdown();
+	}
+	const optionClick = (e: React.MouseEvent<HTMLLIElement, MouseEvent>, option: Option) => {
+		e.preventDefault();
+		selectOption(option);
+	}
+	const optionKeyDown = (e: React.KeyboardEvent<HTMLLIElement>, option: Option) => {
+		if (e.keyCode === 13) selectOption(option);
 	}
 	const buttonValueOption = options.find(option => option.value === buttonValue);
 	const buttonTextFinal = buttonValueOption ? buttonValueOption.text : buttonText || current.text;
 	const currentOptions = options.filter(option => option.text.toUpperCase().includes(currentSearch.toUpperCase()));
 	const currentOptionsRender = currentOptions.map(currentOption => 
-		(<li onClick={e => optionClick(e, currentOption)} key={currentOption.value} className={styles.csOption} title={currentOption.text}>{currentOption.text}</li>));
-	const noResultsRender = (<li className={classNames(styles.csOption, styles.disabled)} title={"No results found..."}>{"No results found..."}</li>);
+		(<li onClick={e => optionClick(e, currentOption)} onKeyDown={e => optionKeyDown(e, currentOption)} key={currentOption.value} className={styles.csOption} title={currentOption.text} tabIndex={0}>{currentOption.text}</li>));
+	const noResultsRender = (<li className={classNames(styles.csOption, styles.disabled)} title={'No results found...'}>{'No results found...'}</li>);
 	const csDropdown = status ? (
 		<div className={styles.csDropdown}>
 			<input className={styles.csSearch} type="text" value={currentSearch} onChange={searchChange} placeholder="Search..." />

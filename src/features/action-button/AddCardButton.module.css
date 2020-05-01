@@ -1,14 +1,10 @@
 .button {
-	font-size: 0;
-	position: fixed;
-	bottom: 1rem;
-	right: 1rem;
 	width: auto;
 	height: auto;
 	
 	background-color: #404040;
 	box-shadow: 3px 3px 5px 0px rgba(0,0,0,0.3);
-	border: none;
+	border: 1px solid hsl(0, 0%, 60%);
 	border-radius: 50%;
 
 	cursor: pointer;

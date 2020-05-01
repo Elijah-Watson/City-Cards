@@ -1,26 +1,26 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../store';
 
 export const slice = createSlice({
 	name: 'personal',
 	initialState: {
-		job: 'All Occupations',
-		monthlyCOL: 3000,
-		currentCityId: '0',
-		adjustedMonthlyCOL: 6000
+		job: 'All Occupations' as string,
+		monthlyCOL: 3000 as number,
+		currentCityId: '0' as string,
+		adjustedMonthlyCOL: 6000 as number
 	},
 	reducers: {
-		updateJob: (state, action) => {
+		updateJob: (state, action: PayloadAction<{ job: string }>) => {
 			state.job = action.payload.job;
 		},
-		updateMonthlyCOL: (state, action) => {
+		updateMonthlyCOL: (state, action: PayloadAction<{ monthlyCOL: number }>) => {
 			state.monthlyCOL = Number(action.payload.monthlyCOL);
 		},
-		updateCurrentCityId: (state, action) => {
+		updateCurrentCityId: (state, action: PayloadAction<{ currentCityId: string }>) => {
 			state.currentCityId = action.payload.currentCityId;
 		},
-		updateAdjustedMonthlyCOL: (state, action) => {
-			state.adjustedMonthlyCOL = Number(action.payload.adjustedMonthlyCOL);
+		updateAdjustedMonthlyCOL: (state, action: PayloadAction<{ adjustedMonthlyCOL: number }>) => {
+			state.adjustedMonthlyCOL = action.payload.adjustedMonthlyCOL;
 		}
 	},
 });
