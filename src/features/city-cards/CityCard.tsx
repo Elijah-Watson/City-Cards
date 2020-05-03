@@ -5,10 +5,9 @@ import { selectJob, selectAdjustedMonthlyCOL } from '../personal/personalSlice';
 import { SearchableSelect } from '../../helpers/searchable-select/SearchableSelect';
 import { Blanker } from '../../helpers/blanker/Blanker';
 import { StatusIndicator } from '../../helpers/status-indicator/StatusIndicator';
+import { gql } from 'apollo-boost';
 import { useQuery } from '@apollo/react-hooks';
 import { queryResponsetoStatus } from '../../helpers/status-indicator/queryResponseToStatus';
-import { CITIES, CITY_WITH_DETAILS_AND_RANGES, 
-	CitiesData, CityWithDetailsAndRangesQueryData, CityWithDetailsAndRangesQueryVars } from '../../queries';
 import { City, Status, FormattedCity, CityWithDetailsandRanges } from '../../types';
 
 import { XCircle } from 'react-feather';
@@ -31,6 +30,22 @@ export function CityCard({ addCityId, removeCityId, cityIds, removeSelf }: CityC
 	useEffect(() => () => removeCityId(currentCityId), [currentCityId, removeCityId]);
 	return newCard ? <NewCityCard cityIds={cityIds} handleChange={handleChange} removeSelf={removeSelf} /> : <LoadedCityCard cityId={currentCityId} removeSelf={removeSelf} />;
 }
+
+interface CitiesData {
+	cities: City[];
+}
+
+const CITIES = gql`
+	query Cities {
+		cities {
+			id
+			name
+			state {
+				code
+			}
+		}
+	}
+`;
 
 interface NewCityCardProps {
 	cityIds: string[];
@@ -103,6 +118,66 @@ function formatCity(city: CityWithDetailsandRanges): FormattedCity {
 		}
 	}
 }
+
+interface CityWithDetailsAndRangesQueryData {
+	city: CityWithDetailsandRanges;
+}
+
+interface CityWithDetailsAndRangesQueryVars {
+	id: string;
+	title: string;
+}
+
+const CITY_WITH_DETAILS_AND_RANGES = gql`
+	query CityDataByID($id: ID!, $title: String!) {
+    	city(input: {id: $id}) {
+      		id
+			name
+			state {
+				name
+				code
+			}
+			population
+			populationRange {
+				min
+				max
+			}
+			costOfLiving
+			costOfLivingRange {
+				min
+				max
+			}
+			violentCrime
+			violentCrimeRange {
+				min
+				max
+			}
+			propertyCrime
+			propertyCrimeRange {
+				min
+				max
+			}
+			happiness
+			happinessRange {
+				min
+				max
+			}
+			job(title: $title) {
+				title
+				averageAnnualSalary
+				averageAnnualSalaryRange {
+					min
+					max
+				}
+				totalJobs
+				totalJobsRange {
+					min
+					max
+				}
+			}
+    	}
+  	}
+`;
 
 interface LoadedCityCardProps {
 	cityId: string;
@@ -245,7 +320,7 @@ function CityCardData({ city, empty }: CityCardDataProps) {
 	);
 }
 
-interface CityDataValue {
+interface StatBarProps {
 	value: number;
 	min: number;
 	max: number;
@@ -253,7 +328,7 @@ interface CityDataValue {
 	outerColor?: string;
 }
 
-function StatBar({ value, min, max, innerColor, outerColor }: CityDataValue) {
+function StatBar({ value, min, max, innerColor, outerColor }: StatBarProps) {
 	const outerColorScheme = {
 		backgroundColor: outerColor
 	}

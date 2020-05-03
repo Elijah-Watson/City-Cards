@@ -5,13 +5,34 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateJob, updateMonthlyCOL, updateCurrentCityId, updateAdjustedMonthlyCOL,
 	selectJob, selectMonthlyCOL, selectCurrentCityId } from './personalSlice';
 import { hideForm } from './formVisibilitySlice';
+import { gql } from 'apollo-boost';
 import { useQuery } from '@apollo/react-hooks';
 import { queryResponsetoStatus } from '../../helpers/status-indicator/queryResponseToStatus';
-import { JOB_TITLES_AND_CITIES, JobTitlesAndCitiesData } from '../../queries';
 import styles from './PersonalForm.module.css';
 import { Job, CityWithCOL, Status } from '../../types';
 
 import { XCircle } from 'react-feather';
+
+interface JobTitlesAndCitiesData {
+	jobs: Job[];
+	cities: CityWithCOL[];
+}
+
+const JOB_TITLES_AND_CITIES = gql`
+	query JobTitlesAndCities {
+		jobs {
+			title
+		}
+		cities {
+			id
+			name
+			state {
+				code
+			}
+			costOfLiving
+		}
+	}
+`;
 
 export function PersonalFormContainer() {
 	const dispatch = useDispatch();
