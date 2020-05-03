@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SearchableSelect } from '../../helpers/searchable-select/SearchableSelect';
 import { StatusIndicator } from '../../helpers/status-indicator/StatusIndicator';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateJob, updateMonthlyCOL, updateCurrentCityId, updateAdjustedMonthlyCOL,
-	selectJob, selectMonthlyCOL, selectCurrentCityId } from './personalSlice';
+import { updateJob, updateAdjustedMonthlyCOL, selectJob } from './personalSlice';
 import { hideForm } from './formVisibilitySlice';
 import { gql } from 'apollo-boost';
 import { useQuery } from '@apollo/react-hooks';
@@ -59,8 +58,8 @@ interface PersonalFormProps {
 
 function PersonalForm({ jobs, cities, status }: PersonalFormProps) {
 	const job = useSelector(selectJob);
-	const monthlyCOL = useSelector(selectMonthlyCOL);
-	const currentCityId = useSelector(selectCurrentCityId);
+	const [monthlyCOL, setMonthlyCOL] = useState<number>(3000);
+	const [currentCityId, setCurrentCityId] = useState<string>();
 	const dispatch = useDispatch();
 
 	const jobTitles = jobs
@@ -76,13 +75,13 @@ function PersonalForm({ jobs, cities, status }: PersonalFormProps) {
 		const currentCity = cities.find(city => city.id === currentCityId);
 		const currentCityCOL = currentCity ? currentCity.costOfLiving : 0.5;
 		const adjustedMonthlyCOL = newMonthlyCOL / currentCityCOL;
-		dispatch(updateMonthlyCOL({ monthlyCOL: newMonthlyCOL }));
+		setMonthlyCOL(newMonthlyCOL);
 		dispatch(updateAdjustedMonthlyCOL({ adjustedMonthlyCOL }));
 	}
 	const currentCityHandler = (cityId: string) => {
 		const currentCity = cities.find(city => city.id === cityId);
 		const currentCityCOL = currentCity ? currentCity.costOfLiving : 0.5;
-		dispatch(updateCurrentCityId({ currentCityId: cityId }));
+		setCurrentCityId(cityId);
 		dispatch(updateAdjustedMonthlyCOL({ adjustedMonthlyCOL: monthlyCOL / currentCityCOL }));
 	}
 
