@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { addCard } from '../city-cards/cityCardsSlice';
-import styles from './ActionButton.module.css';
+import styles from './AddCardButton.module.css';
 
 import { FilePlus } from 'react-feather';
 

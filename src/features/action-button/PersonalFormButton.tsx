@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { toggleForm } from '../personal/formVisibilitySlice';
-import styles from './ActionButton.module.css';
+import styles from './PersonalFormButton.module.css';
 
 import { User } from 'react-feather';
 

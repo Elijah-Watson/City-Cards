@@ -6,7 +6,7 @@
 	width: auto;
 	height: auto;
 	
-	background-color: #404040;
+	background-color: hsl(0, 0%, 25%);
 	box-shadow: 3px 3px 5px 0px rgba(0,0,0,0.3);
 	border: 1px solid hsl(0, 0%, 60%);
 	border-radius: 50%;
@@ -30,6 +30,9 @@
 }
 
 .otherButtons > button {
+	position: absolute;
+	bottom: 100%;
+	right: 100%;
 	opacity: 0;
 
 	transition: transform 500ms ease-in-out,
