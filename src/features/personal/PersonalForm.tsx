@@ -59,8 +59,7 @@ function PersonalForm({ jobTitles, cities, status }: PersonalFormProps) {
 	const [monthlyCOL, setMonthlyCOL] = useState<number>(3000);
 	const [currentCityId, setCurrentCityId] = useState<string>();
 	const dispatch = useDispatch();
-	
-	const jobTitleOptions = jobTitles.map(title => ({ text: title, value: title}));
+	const jobTitleOptions = jobTitles.sort((a, b) => a === 'All Occupations' ? -1 : b === 'All Occupations' ? 1 : a.localeCompare(b)).map(title => ({ text: title, value: title}));
 	const cityOptions = cities.map(city => ({ text: city.name + ', ' + city.state.code, value: city.id }));
 
 	const jobHandler = (value: string) => dispatch(updateJob({ job: value }));
