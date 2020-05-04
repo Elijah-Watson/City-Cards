@@ -163,7 +163,6 @@ const CITY_WITH_DETAILS_AND_RANGES = gql`
 				max
 			}
 			job(title: $title) {
-				title
 				averageAnnualSalary
 				averageAnnualSalaryRange {
 					min

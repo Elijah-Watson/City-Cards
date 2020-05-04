@@ -17,11 +17,7 @@ export interface CityWithCOL extends City {
 	costOfLiving: number;
 }
 
-export interface Job {
-	title: string;
-}
-
-interface JobWithDetails extends Job {
+interface JobWithDetails {
 	averageAnnualSalary: number;
 	totalJobs: number;
 }

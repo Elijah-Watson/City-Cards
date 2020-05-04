@@ -8,20 +8,18 @@ import { gql } from 'apollo-boost';
 import { useQuery } from '@apollo/react-hooks';
 import { queryResponsetoStatus } from '../../helpers/status-indicator/queryResponseToStatus';
 import styles from './PersonalForm.module.css';
-import { Job, CityWithCOL, Status } from '../../types';
+import { CityWithCOL, Status } from '../../types';
 
 import { XCircle } from 'react-feather';
 
 interface JobTitlesAndCitiesData {
-	jobs: Job[];
+	jobTitles: string[];
 	cities: CityWithCOL[];
 }
 
 const JOB_TITLES_AND_CITIES = gql`
 	query JobTitlesAndCities {
-		jobs {
-			title
-		}
+		jobTitles
 		cities {
 			id
 			name
@@ -38,12 +36,12 @@ export function PersonalFormContainer() {
 	const { loading, error, data } = useQuery<JobTitlesAndCitiesData>(JOB_TITLES_AND_CITIES);
 	const status = queryResponsetoStatus(loading, error);
 	const cities = data?.cities ? data.cities: [];
-	const jobs = data?.jobs ? data.jobs : [];
+	const jobTitles = data?.jobTitles ? data.jobTitles : [];
 	const clickHandler = () => dispatch(hideForm());
 	return (
 		<div className={styles.formContainer}>
 			<div className={styles.form}>
-				<PersonalForm cities={cities} jobs={jobs} status={status} />
+				<PersonalForm cities={cities} jobTitles={jobTitles} status={status} />
 				<button onClick={clickHandler} className={styles.button} ><XCircle color='hsl(0, 0%, 90%)' className={styles.buttonIcon} /></button>
 			</div>
 		</div>
@@ -51,22 +49,18 @@ export function PersonalFormContainer() {
 }
 
 interface PersonalFormProps {
-	jobs: Job[];
+	jobTitles: string[];
 	cities: CityWithCOL[]; 
 	status: Status;
 }
 
-function PersonalForm({ jobs, cities, status }: PersonalFormProps) {
+function PersonalForm({ jobTitles, cities, status }: PersonalFormProps) {
 	const job = useSelector(selectJob);
 	const [monthlyCOL, setMonthlyCOL] = useState<number>(3000);
 	const [currentCityId, setCurrentCityId] = useState<string>();
 	const dispatch = useDispatch();
-
-	const jobTitles = jobs
-						.map(job => job.title)
-						.filter((job, index, self) => self.indexOf(job) === index);			
+	
 	const jobTitleOptions = jobTitles.map(title => ({ text: title, value: title}));
-
 	const cityOptions = cities.map(city => ({ text: city.name + ', ' + city.state.code, value: city.id }));
 
 	const jobHandler = (value: string) => dispatch(updateJob({ job: value }));
