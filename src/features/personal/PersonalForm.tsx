@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { SearchableSelect } from '../../helpers/searchable-select/SearchableSelect';
 import { StatusIndicator } from '../../helpers/status-indicator/StatusIndicator';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateJob, updateAdjustedMonthlyCOL, selectJob } from './personalSlice';
+import {
+	updateJob, updateMonthlyCOL, updateCurrentCityId, updateAdjustedMonthlyCOL,
+	selectJob, selectMonthlyCOL, selectCurrentCityId
+} from './personalSlice';
 import { hideForm } from './formVisibilitySlice';
 import { gql } from 'apollo-boost';
 import { useQuery } from '@apollo/react-hooks';
@@ -56,8 +59,8 @@ interface PersonalFormProps {
 
 function PersonalForm({ jobTitles, cities, status }: PersonalFormProps) {
 	const job = useSelector(selectJob);
-	const [monthlyCOL, setMonthlyCOL] = useState<number>(3000);
-	const [currentCityId, setCurrentCityId] = useState<string>();
+	const monthlyCOL = useSelector(selectMonthlyCOL);
+	const currentCityId = useSelector(selectCurrentCityId);
 	const dispatch = useDispatch();
 	const jobTitleOptions = jobTitles.sort((a, b) => a === 'All Occupations' ? -1 : b === 'All Occupations' ? 1 : a.localeCompare(b)).map(title => ({ text: title, value: title}));
 	const cityOptions = cities.map(city => ({ text: city.name + ', ' + city.state.code, value: city.id }));
@@ -68,13 +71,13 @@ function PersonalForm({ jobTitles, cities, status }: PersonalFormProps) {
 		const currentCity = cities.find(city => city.id === currentCityId);
 		const currentCityCOL = currentCity ? currentCity.costOfLiving : 0.5;
 		const adjustedMonthlyCOL = newMonthlyCOL / currentCityCOL;
-		setMonthlyCOL(newMonthlyCOL);
+		dispatch(updateMonthlyCOL({ monthlyCOL: newMonthlyCOL }));
 		dispatch(updateAdjustedMonthlyCOL({ adjustedMonthlyCOL }));
 	}
 	const currentCityHandler = (cityId: string) => {
 		const currentCity = cities.find(city => city.id === cityId);
 		const currentCityCOL = currentCity ? currentCity.costOfLiving : 0.5;
-		setCurrentCityId(cityId);
+		dispatch(updateCurrentCityId({ currentCityId: cityId }));
 		dispatch(updateAdjustedMonthlyCOL({ adjustedMonthlyCOL: monthlyCOL / currentCityCOL }));
 	}
 
