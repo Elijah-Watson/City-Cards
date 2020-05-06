@@ -18,13 +18,9 @@ interface CitiesWithOnlyIdData {
 }
 
 const CITIES_WITH_ONLY_ID = gql`
-	query Cities {
+	query CitiesWithOnlyId {
 		cities {
 			id
-			name
-			state {
-				code
-			}
 		}
 	}
 `;
